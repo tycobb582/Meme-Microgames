@@ -53,8 +53,8 @@ class Ye(Player):
 
 class Drake(Player):
     drizzy_img = pygame.image.load("images\\Drake.png")
-    sounds = {"Down": pygame.mixer.Sound("sounds\\testdown.ogg"), "Left": pygame.mixer.Sound("sounds\\testleft.ogg"),
-              "Right": pygame.mixer.Sound("sounds\\testright.ogg"), "Up": pygame.mixer.Sound("sounds\\testup.ogg")}
+    sounds = {"Down": pygame.mixer.Sound("sounds\\testdown2.ogg"), "Left": pygame.mixer.Sound("sounds\\testleft2.ogg"),
+              "Right": pygame.mixer.Sound("sounds\\testright2.ogg"), "Up": pygame.mixer.Sound("sounds\\testup2.ogg")}
 
     def __init__(self, win_dim):
         super().__init__()
@@ -71,16 +71,16 @@ class Drake(Player):
             if evt.type == pygame.KEYDOWN:
                 if evt.key == self.keybinds["Down"]:
                     self.recording[self.cur_time] = "Down"
-                    Ye.sounds["Down"].play()
+                    Drake.sounds["Down"].play()
                 elif evt.key == self.keybinds["Left"]:
                     self.recording[self.cur_time] = "Left"
-                    Ye.sounds["Left"].play()
+                    Drake.sounds["Left"].play()
                 elif evt.key == self.keybinds["Right"]:
                     self.recording[self.cur_time] = "Right"
-                    Ye.sounds["Right"].play()
+                    Drake.sounds["Right"].play()
                 elif evt.key == self.keybinds["Up"]:
                     self.recording[self.cur_time] = "Up"
-                    Ye.sounds["Up"].play()
+                    Drake.sounds["Up"].play()
         else:
             pass
 
