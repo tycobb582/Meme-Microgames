@@ -37,9 +37,6 @@ def score_check(p1, p2, state):
                         # Same note
                         p2.score += 0.5
                         break
-                else:
-                    # Fail!
-                    continue
 
 
 while not done:
@@ -49,18 +46,19 @@ while not done:
     if turn_clock <= 0:
         if game_state == states.FnFStates.P1_RECORD:
             game_state = states.FnFStates.P2_PLAY
-            p2.cur_time = 0
-            p2.recording = {}
             turn_clock = 3
         elif game_state == states.FnFStates.P2_PLAY:
             score_check(p1, p2, game_state)
             game_state = states.FnFStates.IDLE
-            p1.cur_time = 0
-            p1.recording = {}
             turn_clock = 4
         elif game_state == states.FnFStates.IDLE:
+            for player in players:
+                player.cur_time = 0
+                player.recording = {}
             game_state = states.FnFStates.P1_RECORD
             turn_clock = 3
+    print(p1.recording)
+    print(p2.recording)
 
     # Input
     event = pygame.event.poll()
@@ -69,8 +67,10 @@ while not done:
             done = True
     elif event.type == pygame.QUIT:
         done = True
-    for player in players:
-        player.handle_input(event, game_state, delta_time)
+    if game_state == states.FnFStates.P1_RECORD or game_state == states.FnFStates.P1_PLAY:
+        p1.handle_input(event, game_state, delta_time)
+    elif game_state != states.FnFStates.IDLE:
+        p2.handle_input(event, game_state, delta_time)
 
     # Draw
     win.fill((0, 0, 0))
