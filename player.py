@@ -1,31 +1,21 @@
 import pygame.image
 import pygame.mixer
+from states import FnFStates
 pygame.init()
 
 
 class Player:
-    def __init__(self, player_num):
+    def __init__(self):
         self.keybinds = {}
-        if player_num == 1:
-            self.p_num = 1
-            self.__class__ = Ye
-        else:
-            self.p_num = 2
-            self.__class__ = Drake
+        self.img_pos = (0, 0)
+        self.img = None
+        self.img_dim = (0, 0)
+        self.cur_time = 0
+        self.recording = {}
+        self.score = 0
 
-    def handle_input(self, evt, state):
-        if state.value == self.p_num:
-            if evt.type == pygame.KEYDOWN:
-                if evt.key == self.keybinds["Down"]:
-                    self.__class__.__name__.sounds["Down"].play()
-                elif evt.key == self.keybinds["Left"]:
-                    self.__class__.__name__.sounds["Left"].play()
-                elif evt.key == self.keybinds["Right"]:
-                    self.__class__.__name__.sounds["Right"].play()
-                elif evt.key == self.keybinds["Up"]:
-                    self.__class__.__name__.sounds["Up"].play()
-        else:
-            pass
+    def draw(self, win):
+        win.blit(self.img, (self.img_pos[0], self.img_pos[1], self.img_dim[0], self.img_dim[1]))
 
 
 class Ye(Player):
@@ -33,22 +23,68 @@ class Ye(Player):
     sounds = {"Down": pygame.mixer.Sound("sounds\\testdown.ogg"), "Left": pygame.mixer.Sound("sounds\\testleft.ogg"),
               "Right": pygame.mixer.Sound("sounds\\testright.ogg"), "Up": pygame.mixer.Sound("sounds\\testup.ogg")}
 
-    def __init__(self, player_num):
-        super().__init__(player_num)
+    def __init__(self, win_dim):
+        super().__init__()
         self.img = Ye.ye_img
+        self.img_dim = (self.img.get_width(), self.img.get_height())
+        self.img = pygame.transform.scale(self.img, (self.img_dim[0] * 8, self.img_dim[1] * 8))
         self.keybinds = {"Down": pygame.K_s, "Left": pygame.K_a, "Right": pygame.K_d, "Up": pygame.K_w}
-        self.img_pos = self.img.get_width() // 2
+        self.img_pos = (win_dim[0] * 0.1, win_dim[1] * 0.45)
+
+    def handle_input(self, evt, state, dt):
+        self.cur_time += dt
+        if state == FnFStates.P1_PLAY or state == FnFStates.P1_RECORD:
+            if evt.type == pygame.KEYDOWN:
+                if evt.key == self.keybinds["Down"]:
+                    self.recording[self.cur_time] = "Down"
+                    Ye.sounds["Down"].play()
+                elif evt.key == self.keybinds["Left"]:
+                    self.recording[self.cur_time] = "Left"
+                    Ye.sounds["Left"].play()
+                elif evt.key == self.keybinds["Right"]:
+                    self.recording[self.cur_time] = "Right"
+                    Ye.sounds["Right"].play()
+                elif evt.key == self.keybinds["Up"]:
+                    self.recording[self.cur_time] = "Up"
+                    Ye.sounds["Up"].play()
+        else:
+            pass
 
 
 class Drake(Player):
     drizzy_img = pygame.image.load("images\\Drake.png")
+    sounds = {"Down": pygame.mixer.Sound("sounds\\testdown.ogg"), "Left": pygame.mixer.Sound("sounds\\testleft.ogg"),
+              "Right": pygame.mixer.Sound("sounds\\testright.ogg"), "Up": pygame.mixer.Sound("sounds\\testup.ogg")}
 
-    def __init__(self, player_num):
-        super().__init__(player_num)
+    def __init__(self, win_dim):
+        super().__init__()
         self.img = Drake.drizzy_img
+        self.img_dim = (self.img.get_width(), self.img.get_height())
+        self.img = pygame.transform.scale(self.img, (self.img_dim[0] * 8, self.img_dim[1] * 8))
+        self.img_dim = (self.img.get_width(), self.img.get_height())
+        self.keybinds = {"Down": pygame.K_DOWN, "Left": pygame.K_LEFT, "Right": pygame.K_RIGHT, "Up": pygame.K_UP}
+        self.img_pos = (win_dim[0] * 0.9 - self.img_dim[0], win_dim[1] * 0.45)
+
+    def handle_input(self, evt, state, dt):
+        self.cur_time += dt
+        if state == FnFStates.P2_PLAY or state == FnFStates.P2_RECORD:
+            if evt.type == pygame.KEYDOWN:
+                if evt.key == self.keybinds["Down"]:
+                    self.recording[self.cur_time] = "Down"
+                    Ye.sounds["Down"].play()
+                elif evt.key == self.keybinds["Left"]:
+                    self.recording[self.cur_time] = "Left"
+                    Ye.sounds["Left"].play()
+                elif evt.key == self.keybinds["Right"]:
+                    self.recording[self.cur_time] = "Right"
+                    Ye.sounds["Right"].play()
+                elif evt.key == self.keybinds["Up"]:
+                    self.recording[self.cur_time] = "Up"
+                    Ye.sounds["Up"].play()
+        else:
+            pass
 
 
-yeezy = Ye(1)
 
 
 
