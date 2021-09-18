@@ -31,7 +31,7 @@ class Player:
 class Ye(Player):
     ye_img = pygame.image.load("images\\Ye.png")
     sounds = {"Down": pygame.mixer.Sound("sounds\\testdown.ogg"), "Left": pygame.mixer.Sound("sounds\\testleft.ogg"),
-              "Right": pygame.mixer.Sound("sounds\\testright.ogg.ogg"), "Up": pygame.mixer.Sound("sounds\\testup.ogg")}
+              "Right": pygame.mixer.Sound("sounds\\testright.ogg"), "Up": pygame.mixer.Sound("sounds\\testup.ogg")}
 
     def __init__(self, player_num):
         super().__init__(player_num)
@@ -49,7 +49,6 @@ class Drake(Player):
 
 
 yeezy = Ye(1)
-print(yeezy.__class__.__name__)
 
 
 
