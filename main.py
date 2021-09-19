@@ -72,7 +72,6 @@ def score_check(p1, p2, state):
 
 win_dim = (800, 600)
 bg = pygame.image.load("images\\DvK BG.png")
-fs = False  # Fullscreen
 win = pygame.display.set_mode(win_dim, pygame.RESIZABLE | pygame.SCALED)
 clock = pygame.time.Clock()
 done = False
@@ -85,7 +84,7 @@ interim_time = 1 / (bpm / 60) * 4
 loop_time = 1 / (bpm / 60) * 16
 turn_clock = interim_time
 font = pygame.font.SysFont("Arial", 24)
-last_turn = None
+last_turn = states.FnFStates.P1_PLAY
 hollow_arrows = {"Down": pygame.image.load("images\\down_h.png"), "Left": pygame.image.load("images\\left_h.png"),
                  "Right": pygame.image.load("images\\right_h.png"), "Up": pygame.image.load("images\\up_h.png")}
 arrow_y_align = 200
@@ -157,6 +156,9 @@ while not done:
         arrow.update(delta_time)
         if arrow.y <= -48:
             notes.remove(arrow)
+
+    for player in players:
+        player.update(game_state)
 
     # Input
     event = pygame.event.poll()

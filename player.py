@@ -19,18 +19,22 @@ class Player:
 
 
 class Ye(Player):
-    ye_img = pygame.image.load("images\\Ye.png")
+    ye_faces = {"Down": pygame.image.load("Faces\\Kanye (Down).png"), "Left": pygame.image.load("Faces\\Kanye (Left).png"),
+                "Right": pygame.image.load("Faces\\Kanye (Right).png"), "Up": pygame.image.load("Faces\\Kanye (Up).png"),
+                "Idle": pygame.image.load("images\\Ye.png")}
     sounds = {"Down": pygame.mixer.Sound("sounds\\Kanye (Down).ogg"), "Left": pygame.mixer.Sound("sounds\\Kanye (Left).ogg"),
               "Right": pygame.mixer.Sound("sounds\\Kanye (Right).ogg"), "Up": pygame.mixer.Sound("sounds\\Kanye (Up).ogg")}
 
     def __init__(self, win_dim):
         super().__init__()
-        self.img = Ye.ye_img
-        self.img_dim = (self.img.get_width(), self.img.get_height())
-        self.img = pygame.transform.scale(self.img, (self.img_dim[0] * 8, self.img_dim[1] * 8))
+        self.img = Ye.ye_faces["Idle"]
         self.img_dim = (self.img.get_width(), self.img.get_height())
         self.keybinds = {"Down": pygame.K_s, "Left": pygame.K_a, "Right": pygame.K_d, "Up": pygame.K_w}
         self.img_pos = (win_dim[0] * 0.1, win_dim[1] * 0.45)
+
+    def update(self, state):
+        if state == FnFStates.IDLE:
+            self.img = Ye.ye_faces["Idle"]
 
     def handle_input(self, evt, state, dt):
         self.cur_time += dt
@@ -38,33 +42,43 @@ class Ye(Player):
             if evt.type == pygame.KEYDOWN:
                 if evt.key == self.keybinds["Down"]:
                     self.recording[self.cur_time] = "Down"
+                    self.img = Ye.ye_faces["Down"]
                     Ye.sounds["Down"].play()
                 elif evt.key == self.keybinds["Left"]:
                     self.recording[self.cur_time] = "Left"
+                    self.img = Ye.ye_faces["Left"]
                     Ye.sounds["Left"].play()
                 elif evt.key == self.keybinds["Right"]:
                     self.recording[self.cur_time] = "Right"
+                    self.img = Ye.ye_faces["Right"]
                     Ye.sounds["Right"].play()
                 elif evt.key == self.keybinds["Up"]:
                     self.recording[self.cur_time] = "Up"
+                    self.img = Ye.ye_faces["Up"]
                     Ye.sounds["Up"].play()
         else:
             pass
 
 
 class Drake(Player):
-    drizzy_img = pygame.image.load("images\\Drake.png")
+    drizzy_faces = {"Down": pygame.image.load("Faces\\Drake (Down).png"),
+                "Left": pygame.image.load("Faces\\Drake (Left).png"),
+                "Right": pygame.image.load("Faces\\Drake (Right).png"),
+                "Up": pygame.image.load("Faces\\Drake (Up).png"),
+                "Idle": pygame.image.load("images\\Drake.png")}
     sounds = {"Down": pygame.mixer.Sound("sounds\\Drake (Down).ogg"), "Left": pygame.mixer.Sound("sounds\\Drake (Left).ogg"),
               "Right": pygame.mixer.Sound("sounds\\Drake (Right).ogg"), "Up": pygame.mixer.Sound("sounds\\Drake (Up).ogg")}
 
     def __init__(self, win_dim):
         super().__init__()
-        self.img = Drake.drizzy_img
-        self.img_dim = (self.img.get_width(), self.img.get_height())
-        self.img = pygame.transform.scale(self.img, (self.img_dim[0] * 8, self.img_dim[1] * 8))
+        self.img = Drake.drizzy_faces["Idle"]
         self.img_dim = (self.img.get_width(), self.img.get_height())
         self.keybinds = {"Down": pygame.K_DOWN, "Left": pygame.K_LEFT, "Right": pygame.K_RIGHT, "Up": pygame.K_UP}
         self.img_pos = (win_dim[0] * 0.9 - self.img_dim[0], win_dim[1] * 0.45)
+
+    def update(self, state):
+        if state == FnFStates.IDLE:
+            self.img = Drake.drizzy_faces["Idle"]
 
     def handle_input(self, evt, state, dt):
         self.cur_time += dt
@@ -72,15 +86,19 @@ class Drake(Player):
             if evt.type == pygame.KEYDOWN:
                 if evt.key == self.keybinds["Down"]:
                     self.recording[self.cur_time] = "Down"
+                    self.img = Drake.drizzy_faces["Down"]
                     Drake.sounds["Down"].play()
                 elif evt.key == self.keybinds["Left"]:
                     self.recording[self.cur_time] = "Left"
+                    self.img = Drake.drizzy_faces["Left"]
                     Drake.sounds["Left"].play()
                 elif evt.key == self.keybinds["Right"]:
                     self.recording[self.cur_time] = "Right"
+                    self.img = Drake.drizzy_faces["Right"]
                     Drake.sounds["Right"].play()
                 elif evt.key == self.keybinds["Up"]:
                     self.recording[self.cur_time] = "Up"
+                    self.img = Drake.drizzy_faces["Up"]
                     Drake.sounds["Up"].play()
         else:
             pass
