@@ -1,7 +1,7 @@
 import pygame
 import player
 import states
-import arrows
+pygame.mixer.init()
 
 
 def score_check(p1, p2, state):
@@ -75,22 +75,26 @@ fs = False  # Fullscreen
 win = pygame.display.set_mode(win_dim, pygame.RESIZABLE | pygame.SCALED)
 clock = pygame.time.Clock()
 done = False
-game_state = states.FnFStates.P1_RECORD
+game_state = states.FnFStates.IDLE
 p1 = player.Ye(win_dim)
 p2 = player.Drake(win_dim)
 players = [p1, p2]
-bpm = 120
-turn_clock = 1 / (bpm / 60) * 8
-timer_reset = turn_clock
+bpm = 100
+interim_time = 1 / (bpm / 60) * 4
+loop_time = 1 / (bpm / 60) * 16
+turn_clock = interim_time
 font = pygame.font.SysFont("Arial", 24)
-last_turn = None
+last_turn = states.FnFStates.P2_RECORD
 hollow_arrows = {"Down": pygame.image.load("images\\down_h.png"), "Left": pygame.image.load("images\\left_h.png"),
                  "Right": pygame.image.load("images\\right_h.png"), "Up": pygame.image.load("images\\up_h.png")}
 arrow_y_align = 200
 notes = []
+prev_notes = 0
 winning_score = 30
 winner = None
-
+beats = {"Cool Loop": "sounds\\loop1coolname.ogg", "Kickoff": "sounds\\kickoff.ogg"}
+pygame.mixer.music.load(beats["Kickoff"])
+pygame.mixer.music.play()
 
 while not done:
     # Update
@@ -107,25 +111,30 @@ while not done:
             else:
                 pass
         elif game_state == states.FnFStates.P1_RECORD:
+            pygame.mixer.music.play()
             game_state = states.FnFStates.P2_PLAY
-            turn_clock = timer_reset
-            for time in p1.recording:
-                notes.append(arrows.Arrow(p1.recording[time], time, p2.img_pos, win_dim[1], turn_clock))
+            turn_clock = loop_time
+            pygame.mixer.music.load(beats["Cool Loop"])
+            pygame.mixer.music.play()
         elif game_state == states.FnFStates.P2_PLAY:
             score_check(p1, p2, game_state)
             game_state = states.FnFStates.IDLE
             last_turn = states.FnFStates.P1_RECORD
-            turn_clock = timer_reset
+            turn_clock = interim_time
+            pygame.mixer.music.load(beats["Kickoff"])
+            pygame.mixer.music.play()
         elif game_state == states.FnFStates.P2_RECORD:
             game_state = states.FnFStates.P1_PLAY
-            turn_clock = timer_reset
-            for time in p2.recording:
-                notes.append(arrows.Arrow(p2.recording[time], time, p1.img_pos, win_dim[1], turn_clock))
+            turn_clock = loop_time
+            pygame.mixer.music.load(beats["Cool Loop"])
+            pygame.mixer.music.play()
         elif game_state == states.FnFStates.P1_PLAY:
             score_check(p1, p2, game_state)
             game_state = states.FnFStates.IDLE
             last_turn = states.FnFStates.P2_RECORD
-            turn_clock = timer_reset
+            turn_clock = interim_time
+            pygame.mixer.music.load(beats["Kickoff"])
+            pygame.mixer.music.play()
         elif game_state == states.FnFStates.IDLE:
             for player in players:
                 player.cur_time = 0
@@ -134,7 +143,9 @@ while not done:
                 game_state = states.FnFStates.P2_RECORD
             else:
                 game_state = states.FnFStates.P1_RECORD
-            turn_clock = timer_reset
+            turn_clock = loop_time
+            pygame.mixer.music.load(beats["Cool Loop"])
+            pygame.mixer.music.play()
 
     for arrow in notes:
         arrow.update(delta_time)
@@ -149,9 +160,9 @@ while not done:
     elif event.type == pygame.QUIT:
         done = True
     if game_state == states.FnFStates.P1_RECORD or game_state == states.FnFStates.P1_PLAY:
-        p1.handle_input(event, game_state, delta_time)
-    elif game_state != states.FnFStates.IDLE:
-        p2.handle_input(event, game_state, delta_time)
+        notes = p1.handle_input(event, game_state, delta_time, loop_time, p2.img_pos, notes)
+    elif game_state == states.FnFStates.P2_RECORD or game_state == states.FnFStates.P2_PLAY:
+        notes = p2.handle_input(event, game_state, delta_time, loop_time, p2.img_pos, notes)
 
     # Draw
     win.fill((0, 0, 0))
