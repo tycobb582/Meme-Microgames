@@ -1,30 +1,17 @@
 import pygame
 import player
 import states
-
-win_dim = (800, 600)
-fs = False  # Fullscreen
-win = pygame.display.set_mode(win_dim, pygame.RESIZABLE | pygame.SCALED)
-clock = pygame.time.Clock()
-done = False
-game_state = states.FnFStates.P1_RECORD
-p1 = player.Ye(win_dim)
-p2 = player.Drake(win_dim)
-players = [p1, p2]
-turn_clock = 3
-font = pygame.font.SysFont("Arial", 24)
-last_turn = None
-hollow_arrows = {"Down": pygame.image.load("images\\down_h.png"), "Left": pygame.image.load("images\\left_h.png.png"),
-                 "Right": pygame.image.load("images\\right_h.png"), "Up": pygame.image.load("images\\up_h.png")}
-filled_arrows = {"Down": pygame.image.load("images\\down_f.png"), "Left": pygame.image.load("images\\left_f.png.png"),
-                 "Right": pygame.image.load("images\\right_f.png"), "Up": pygame.image.load("images\\up_f.png")}
+import arrows
 
 
 def score_check(p1, p2, state):
+    perfect = 0.2
+    good = 0.35
+    ok = 0.45
     if state == states.FnFStates.P2_PLAY:
         for time in p1.recording:
             for time2 in p2.recording:
-                if time - 0.15 <= time2 <= time + 0.15:
+                if time - perfect <= time2 <= time + perfect:
                     # Perfect!
                     if p1.recording[time] == p2.recording[time2]:
                         # Same note
@@ -33,7 +20,7 @@ def score_check(p1, p2, state):
                     else:
                         p1.score += 1
                         break
-                elif time - 0.25 <= time2 <= time + 0.25:
+                elif time - good <= time2 <= time + good:
                     # Good!
                     if p1.recording[time] == p2.recording[time2]:
                         # Same note
@@ -42,7 +29,7 @@ def score_check(p1, p2, state):
                     else:
                         p1.score += 1
                         break
-                elif time - 0.35 <= time2 <= time + 0.35:
+                elif time - ok <= time2 <= time + ok:
                     # Okay!
                     if p1.recording[time] == p2.recording[time2]:
                         # Same note
@@ -54,7 +41,7 @@ def score_check(p1, p2, state):
     elif state == states.FnFStates.P1_PLAY:
         for time in p2.recording:
             for time2 in p1.recording:
-                if time - 0.15 <= time2 <= time + 0.15:
+                if time - perfect <= time2 <= time + perfect:
                     # Perfect!
                     if p2.recording[time] == p1.recording[time2]:
                         # Same note
@@ -63,7 +50,7 @@ def score_check(p1, p2, state):
                     else:
                         p2.score += 1
                         break
-                elif time - 0.25 <= time2 <= time + 0.25:
+                elif time - good <= time2 <= time + good:
                     # Good!
                     if p2.recording[time] == p1.recording[time2]:
                         # Same note
@@ -72,7 +59,7 @@ def score_check(p1, p2, state):
                     else:
                         p2.score += 1
                         break
-                elif time - 0.35 <= time2 <= time + 0.35:
+                elif time - ok <= time2 <= time + ok:
                     # Okay!
                     if p2.recording[time] == p1.recording[time2]:
                         # Same note
@@ -83,27 +70,62 @@ def score_check(p1, p2, state):
                         break
 
 
+win_dim = (800, 600)
+fs = False  # Fullscreen
+win = pygame.display.set_mode(win_dim, pygame.RESIZABLE | pygame.SCALED)
+clock = pygame.time.Clock()
+done = False
+game_state = states.FnFStates.P1_RECORD
+p1 = player.Ye(win_dim)
+p2 = player.Drake(win_dim)
+players = [p1, p2]
+bpm = 120
+turn_clock = 1 / (bpm / 60) * 8
+timer_reset = turn_clock
+font = pygame.font.SysFont("Arial", 24)
+last_turn = None
+hollow_arrows = {"Down": pygame.image.load("images\\down_h.png"), "Left": pygame.image.load("images\\left_h.png"),
+                 "Right": pygame.image.load("images\\right_h.png"), "Up": pygame.image.load("images\\up_h.png")}
+arrow_y_align = 200
+notes = []
+winning_score = 30
+winner = None
+
+
 while not done:
     # Update
     delta_time = clock.tick() / 1000
     turn_clock -= delta_time
     if turn_clock <= 0:
-        if game_state == states.FnFStates.P1_RECORD:
+        if p1.score >= 30 or p2.score >= 30:
+            if p1.score > p2.score:
+                game_state = states.FnFStates.P1_WIN
+                winner = p1.__class__.__name__
+            elif p2.score > p1.score:
+                game_state = states.FnFStates.P2_WIN
+                winner = p2.__class__.__name__
+            else:
+                pass
+        elif game_state == states.FnFStates.P1_RECORD:
             game_state = states.FnFStates.P2_PLAY
-            turn_clock = 3
+            turn_clock = timer_reset
+            for time in p1.recording:
+                notes.append(arrows.Arrow(p1.recording[time], time, p2.img_pos, win_dim[1], turn_clock))
         elif game_state == states.FnFStates.P2_PLAY:
             score_check(p1, p2, game_state)
             game_state = states.FnFStates.IDLE
             last_turn = states.FnFStates.P1_RECORD
-            turn_clock = 4
+            turn_clock = timer_reset
         elif game_state == states.FnFStates.P2_RECORD:
             game_state = states.FnFStates.P1_PLAY
-            turn_clock = 3
+            turn_clock = timer_reset
+            for time in p2.recording:
+                notes.append(arrows.Arrow(p2.recording[time], time, p1.img_pos, win_dim[1], turn_clock))
         elif game_state == states.FnFStates.P1_PLAY:
             score_check(p1, p2, game_state)
             game_state = states.FnFStates.IDLE
             last_turn = states.FnFStates.P2_RECORD
-            turn_clock = 4
+            turn_clock = timer_reset
         elif game_state == states.FnFStates.IDLE:
             for player in players:
                 player.cur_time = 0
@@ -112,7 +134,12 @@ while not done:
                 game_state = states.FnFStates.P2_RECORD
             else:
                 game_state = states.FnFStates.P1_RECORD
-            turn_clock = 3
+            turn_clock = timer_reset
+
+    for arrow in notes:
+        arrow.update(delta_time)
+        if arrow.y <= -48:
+            notes.remove(arrow)
 
     # Input
     event = pygame.event.poll()
@@ -135,14 +162,27 @@ while not done:
     for arrow in hollow_arrows:
         if arrow == "Down":
             for player in players:
-                win.blit(arrow, (player.img_pos[0] - 50, player.img_pos[1] - 100))
+                win.blit(hollow_arrows[arrow], (player.img_pos[0] + 10, player.img_pos[1] - arrow_y_align))
+        elif arrow == "Left":
+            for player in players:
+                win.blit(hollow_arrows[arrow], (player.img_pos[0] - 50, player.img_pos[1] - arrow_y_align))
+        elif arrow == "Right":
+            for player in players:
+                win.blit(hollow_arrows[arrow], (player.img_pos[0] + 70, player.img_pos[1] - arrow_y_align))
+        elif arrow == "Up":
+            for player in players:
+                win.blit(hollow_arrows[arrow], (player.img_pos[0] + 130, player.img_pos[1] - arrow_y_align))
+    for arrow in notes:
+        arrow.draw(win)
     if game_state == states.FnFStates.P1_RECORD or game_state == states.FnFStates.P2_RECORD:
         temp = font.render("Record!   " + str(round(turn_clock, 3)), False, (255, 255, 0))
     elif game_state == states.FnFStates.P1_PLAY or game_state == states.FnFStates.P2_PLAY:
         temp = font.render("Play!   " + str(round(turn_clock, 3)), False, (255, 255, 0))
-    else:
+    elif game_state == states.FnFStates.IDLE:
         temp = font.render("Cool it!   " + str(round(turn_clock, 3)), False, (255, 255, 0))
-    win.blit(temp, (win_dim[0] // 2 - 80, win_dim[1] * 0.1))
+    else:
+        temp = font.render(winner + " Wins!", False, (0, 255, 0))
+    win.blit(temp, (win_dim[0] // 2 - int(temp.get_width()) // 2, win_dim[1] * 0.1))
     pygame.display.flip()
 
 pygame.quit()
