@@ -71,6 +71,7 @@ def score_check(p1, p2, state):
 
 
 win_dim = (800, 600)
+bg = pygame.image.load("images\\DvK BG.png")
 fs = False  # Fullscreen
 win = pygame.display.set_mode(win_dim, pygame.RESIZABLE | pygame.SCALED)
 clock = pygame.time.Clock()
@@ -155,6 +156,7 @@ while not done:
 
     # Draw
     win.fill((0, 0, 0))
+    win.blit(bg, (0, 0))
     for player in players:
         player.draw(win)
         temp = font.render(str(player.score), False, (175, 175, 175))
