@@ -28,6 +28,7 @@ class Ye(Player):
         self.img = Ye.ye_img
         self.img_dim = (self.img.get_width(), self.img.get_height())
         self.img = pygame.transform.scale(self.img, (self.img_dim[0] * 8, self.img_dim[1] * 8))
+        self.img_dim = (self.img.get_width(), self.img.get_height())
         self.keybinds = {"Down": pygame.K_s, "Left": pygame.K_a, "Right": pygame.K_d, "Up": pygame.K_w}
         self.img_pos = (win_dim[0] * 0.1, win_dim[1] * 0.45)
 
