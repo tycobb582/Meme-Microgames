@@ -19,9 +19,9 @@ class Player:
 
 
 class Ye(Player):
-    ye_faces = {"Down": pygame.image.load("Faces\\Kanye (Down).png"), "Left": pygame.image.load("Faces\\Kanye (Left).png"),
-                "Right": pygame.image.load("Faces\\Kanye (Right).png"), "Up": pygame.image.load("Faces\\Kanye (Up).png"),
-                "Idle": pygame.image.load("images\\Ye.png")}
+    ye_faces = {"Down": pygame.image.load("images\\Kanye (Down).png"), "Left": pygame.image.load("images\\Kanye (Left).png"),
+                "Right": pygame.image.load("images\\Kanye (Right).png"), "Up": pygame.image.load("images\\Kanye (Up).png"),
+                "Idle": pygame.image.load("images\\Kanye (Idle).png")}
     sounds = {"Down": pygame.mixer.Sound("sounds\\Kanye (Down).ogg"), "Left": pygame.mixer.Sound("sounds\\Kanye (Left).ogg"),
               "Right": pygame.mixer.Sound("sounds\\Kanye (Right).ogg"), "Up": pygame.mixer.Sound("sounds\\Kanye (Up).ogg")}
 
@@ -61,11 +61,11 @@ class Ye(Player):
 
 
 class Drake(Player):
-    drizzy_faces = {"Down": pygame.image.load("Faces\\Drake (Down).png"),
-                "Left": pygame.image.load("Faces\\Drake (Left).png"),
-                "Right": pygame.image.load("Faces\\Drake (Right).png"),
-                "Up": pygame.image.load("Faces\\Drake (Up).png"),
-                "Idle": pygame.image.load("images\\Drake.png")}
+    drizzy_faces = {"Down": pygame.image.load("images\\Drake (Down).png"),
+                "Left": pygame.image.load("images\\Drake (Left).png"),
+                "Right": pygame.image.load("images\\Drake (Right).png"),
+                "Up": pygame.image.load("images\\Drake (Up).png"),
+                "Idle": pygame.image.load("images\\Drake (Idle).png")}
     sounds = {"Down": pygame.mixer.Sound("sounds\\Drake (Down).ogg"), "Left": pygame.mixer.Sound("sounds\\Drake (Left).ogg"),
               "Right": pygame.mixer.Sound("sounds\\Drake (Right).ogg"), "Up": pygame.mixer.Sound("sounds\\Drake (Up).ogg")}
 
