@@ -76,13 +76,14 @@ fs = False  # Fullscreen
 win = pygame.display.set_mode(win_dim, pygame.RESIZABLE | pygame.SCALED)
 clock = pygame.time.Clock()
 done = False
-game_state = states.FnFStates.P1_RECORD
+game_state = states.FnFStates.IDLE
 p1 = player.Ye(win_dim)
 p2 = player.Drake(win_dim)
 players = [p1, p2]
-bpm = 120
-turn_clock = 1 / (bpm / 60) * 8
-timer_reset = turn_clock
+bpm = 100
+interim_time = 1 / (bpm / 60) * 4
+loop_time = 1 / (bpm / 60) * 16
+turn_clock = interim_time
 font = pygame.font.SysFont("Arial", 24)
 last_turn = None
 hollow_arrows = {"Down": pygame.image.load("images\\down_h.png"), "Left": pygame.image.load("images\\left_h.png"),
@@ -91,6 +92,9 @@ arrow_y_align = 200
 notes = []
 winning_score = 30
 winner = None
+beats = {"Cool Loop": "sounds\\loop1coolname.ogg", "Kickoff": "sounds\\kickoff.ogg"}
+pygame.mixer.music.load(beats["Kickoff"])
+pygame.mixer.music.play()
 
 
 while not done:
@@ -98,44 +102,56 @@ while not done:
     delta_time = clock.tick() / 1000
     turn_clock -= delta_time
     if turn_clock <= 0:
-        if p1.score >= 30 or p2.score >= 30:
-            if p1.score > p2.score:
-                game_state = states.FnFStates.P1_WIN
-                winner = p1.__class__.__name__
-            elif p2.score > p1.score:
-                game_state = states.FnFStates.P2_WIN
-                winner = p2.__class__.__name__
-            else:
-                pass
-        elif game_state == states.FnFStates.P1_RECORD:
-            game_state = states.FnFStates.P2_PLAY
-            turn_clock = timer_reset
-            for time in p1.recording:
-                notes.append(arrows.Arrow(p1.recording[time], time, p2.img_pos, win_dim[1], turn_clock))
-        elif game_state == states.FnFStates.P2_PLAY:
-            score_check(p1, p2, game_state)
-            game_state = states.FnFStates.IDLE
-            last_turn = states.FnFStates.P1_RECORD
-            turn_clock = timer_reset
-        elif game_state == states.FnFStates.P2_RECORD:
-            game_state = states.FnFStates.P1_PLAY
-            turn_clock = timer_reset
-            for time in p2.recording:
-                notes.append(arrows.Arrow(p2.recording[time], time, p1.img_pos, win_dim[1], turn_clock))
-        elif game_state == states.FnFStates.P1_PLAY:
-            score_check(p1, p2, game_state)
-            game_state = states.FnFStates.IDLE
-            last_turn = states.FnFStates.P2_RECORD
-            turn_clock = timer_reset
-        elif game_state == states.FnFStates.IDLE:
-            for player in players:
-                player.cur_time = 0
-                player.recording = {}
-            if last_turn == states.FnFStates.P1_RECORD:
-                game_state = states.FnFStates.P2_RECORD
-            else:
-                game_state = states.FnFStates.P1_RECORD
-            turn_clock = timer_reset
+        if turn_clock <= 0:
+            if p1.score >= 30 or p2.score >= 30:
+                if p1.score > p2.score:
+                    game_state = states.FnFStates.P1_WIN
+                    winner = p1.__class__.__name__
+                elif p2.score > p1.score:
+                    game_state = states.FnFStates.P2_WIN
+                    winner = p2.__class__.__name__
+                else:
+                    pass
+            elif game_state == states.FnFStates.P1_RECORD:
+                pygame.mixer.music.play()
+                game_state = states.FnFStates.P2_PLAY
+                turn_clock = loop_time
+                for time in p1.recording:
+                    notes.append(arrows.Arrow(p1.recording[time], time, p2.img_pos, win_dim[1], loop_time))
+                pygame.mixer.music.load(beats["Cool Loop"])
+                pygame.mixer.music.play()
+            elif game_state == states.FnFStates.P2_PLAY:
+                score_check(p1, p2, game_state)
+                game_state = states.FnFStates.IDLE
+                last_turn = states.FnFStates.P1_RECORD
+                turn_clock = interim_time
+                pygame.mixer.music.load(beats["Kickoff"])
+                pygame.mixer.music.play()
+            elif game_state == states.FnFStates.P2_RECORD:
+                game_state = states.FnFStates.P1_PLAY
+                turn_clock = loop_time
+                for time in p2.recording:
+                    notes.append(arrows.Arrow(p2.recording[time], time, p1.img_pos, win_dim[1], loop_time))
+                pygame.mixer.music.load(beats["Cool Loop"])
+                pygame.mixer.music.play()
+            elif game_state == states.FnFStates.P1_PLAY:
+                score_check(p1, p2, game_state)
+                game_state = states.FnFStates.IDLE
+                last_turn = states.FnFStates.P2_RECORD
+                turn_clock = interim_time
+                pygame.mixer.music.load(beats["Kickoff"])
+                pygame.mixer.music.play()
+            elif game_state == states.FnFStates.IDLE:
+                for player in players:
+                    player.cur_time = 0
+                    player.recording = {}
+                if last_turn == states.FnFStates.P1_RECORD:
+                    game_state = states.FnFStates.P2_RECORD
+                else:
+                    game_state = states.FnFStates.P1_RECORD
+                turn_clock = loop_time
+                pygame.mixer.music.load(beats["Cool Loop"])
+                pygame.mixer.music.play()
 
     for arrow in notes:
         arrow.update(delta_time)

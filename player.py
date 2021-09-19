@@ -20,8 +20,8 @@ class Player:
 
 class Ye(Player):
     ye_img = pygame.image.load("images\\Ye.png")
-    sounds = {"Down": pygame.mixer.Sound("sounds\\testdown.ogg"), "Left": pygame.mixer.Sound("sounds\\testleft.ogg"),
-              "Right": pygame.mixer.Sound("sounds\\testright.ogg"), "Up": pygame.mixer.Sound("sounds\\testup.ogg")}
+    sounds = {"Down": pygame.mixer.Sound("sounds\\Kanye (Down).ogg"), "Left": pygame.mixer.Sound("sounds\\Kanye (Left).ogg"),
+              "Right": pygame.mixer.Sound("sounds\\Kanye (Right).ogg"), "Up": pygame.mixer.Sound("sounds\\Kanye (Up).ogg")}
 
     def __init__(self, win_dim):
         super().__init__()
@@ -54,8 +54,8 @@ class Ye(Player):
 
 class Drake(Player):
     drizzy_img = pygame.image.load("images\\Drake.png")
-    sounds = {"Down": pygame.mixer.Sound("sounds\\testdown2.ogg"), "Left": pygame.mixer.Sound("sounds\\testleft2.ogg"),
-              "Right": pygame.mixer.Sound("sounds\\testright2.ogg"), "Up": pygame.mixer.Sound("sounds\\testup2.ogg")}
+    sounds = {"Down": pygame.mixer.Sound("sounds\\Drake (Down).ogg"), "Left": pygame.mixer.Sound("sounds\\Drake (Left).ogg"),
+              "Right": pygame.mixer.Sound("sounds\\Drake (Right).ogg"), "Up": pygame.mixer.Sound("sounds\\Drake (Up).ogg")}
 
     def __init__(self, win_dim):
         super().__init__()
